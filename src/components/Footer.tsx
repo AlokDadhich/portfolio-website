@@ -1,4 +1,5 @@
 import React from 'react';
+import Magnetic from './Magnetic';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -17,14 +18,14 @@ const Footer = () => {
               Built by Alok Dadhich © {currentYear}
             </div>
             
-            <button
-              onClick={scrollToTop}
-              className="text-slate-400 hover:text-blue-400 transition-colors duration-300 text-sm font-mono group"
-            >
-              <span className="group-hover:-translate-y-1 inline-block transition-transform duration-300">
+            <Magnetic strength={0.3}>
+              <button
+                onClick={scrollToTop}
+                className="text-slate-400 hover:text-blue-400 transition-colors duration-300 text-sm font-mono cursor-hover"
+              >
                 Back to top ↑
-              </span>
-            </button>
+              </button>
+            </Magnetic>
           </div>
         </div>
       </div>

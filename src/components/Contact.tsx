@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Send, CheckCircle, Github, Linkedin, Mail } from 'lucide-react';
+import Reveal from './Reveal';
+import Magnetic from './Magnetic';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -9,25 +11,6 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -81,14 +64,9 @@ const Contact = () => {
   ];
 
   return (
-    <section 
-      id="contact" 
-      ref={sectionRef}
-      className="py-24 relative"
-    >
+    <section className="min-h-screen py-24 relative">
       <div className="max-w-2xl mx-auto px-6 lg:px-8 relative z-10 text-center">
-        <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <div className="space-y-12">
+        <Reveal className="space-y-12">
             {/* Section Title */}
             <div className="space-y-4">
               <p className="text-blue-400 font-mono">04. What's Next?</p>
@@ -96,7 +74,7 @@ const Contact = () => {
             </div>
 
             <div className="space-y-12">
-              <p className="text-slate-400 leading-relaxed max-w-lg mx-auto">
+              <p className="text-slate-400 leading-relaxed text-justify max-w-lg mx-auto">
                 I'm currently looking for new opportunities and exciting projects to work on. 
                 My inbox is always open. Whether you have a question, want to collaborate, or just want to say hi, 
                 I'll try my best to get back to you!
@@ -156,7 +134,7 @@ const Contact = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting || isSubmitted}
-                    className="w-full px-8 py-4 border border-blue-400 text-blue-400 rounded font-mono text-sm hover:bg-blue-400/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                    className="w-full px-8 py-4 border border-blue-400 text-blue-400 rounded font-mono text-sm hover:bg-blue-400/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent cursor-hover"
                   >
                     <div className="flex items-center justify-center space-x-3">
                       {isSubmitting ? (
@@ -183,32 +161,47 @@ const Contact = () => {
               {/* Social Icons - Below the form */}
               <div className="flex justify-center items-center space-x-8 pt-8">
                 {socialLinks.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target={social.href.startsWith('http') ? '_blank' : '_self'}
-                    rel={social.href.startsWith('http') ? 'noopener noreferrer' : ''}
-                    className={`group relative p-4 text-slate-400 ${social.hoverColor} transition-all duration-300 hover:-translate-y-2 hover:scale-110`}
-                    aria-label={social.label}
-                  >
-                    <social.icon size={28} />
-                    
-                    {/* Subtle glow effect on hover */}
-                    <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-300 bg-current blur-xl"></div>
-                    
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
-                      <div className="bg-slate-800 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-600/50 whitespace-nowrap shadow-lg">
-                        {social.label}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                  <Magnetic key={index} strength={0.45}>
+                    <a
+                      href={social.href}
+                      target={social.href.startsWith('http') ? '_blank' : '_self'}
+                      rel={social.href.startsWith('http') ? 'noopener noreferrer' : ''}
+                      className={`group relative p-4 text-slate-400 ${social.hoverColor} transition-colors duration-300 block cursor-hover`}
+                      aria-label={social.label}
+                    >
+                      <social.icon size={28} />
+
+                      {/* Subtle glow effect on hover */}
+                      <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-300 bg-current blur-xl"></div>
+
+                      {/* Tooltip */}
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+                        <div className="bg-slate-800 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-600/50 whitespace-nowrap shadow-lg">
+                          {social.label}
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                        </div>
                       </div>
-                    </div>
-                  </a>
+                    </a>
+                  </Magnetic>
+                ))}
+              </div>
+
+              {/* Quick info strip */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-lg mx-auto pt-4">
+                {[
+                  { label: 'Location', value: 'Pune, India' },
+                  { label: 'Status', value: 'Open to Roles' },
+                  { label: 'Response', value: '~24 hrs' },
+                  { label: 'Focus', value: 'ME + CS' },
+                ].map((info) => (
+                  <div key={info.label} className="text-center">
+                    <div className="text-slate-500 font-mono text-xs mb-1">{info.label}</div>
+                    <div className="text-slate-300 font-mono text-sm">{info.value}</div>
+                  </div>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
